@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.delightroom.reminder.ui.home.HomeFragment"
+        android:label="home"
+        tools:layout="@layout/home_fragment">
+        <action
+            android:id="@+id/action_home_to_register"
+            app:destination="@+id/register"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register"
+        android:name="com.delightroom.reminder.ui.register.RegisterFragment"
+        android:label="register"
+        tools:layout="@layout/register_fragment">
+    </fragment>
+
+    <fragment
+        android:id="@+id/alarm"
+        android:name="com.delightroom.reminder.ui.alarm.AlarmFragment"
+        android:label="alarm"
+        tools:layout="@layout/alarm_fragment"/>
+
+</navigation>
