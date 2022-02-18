@@ -37,21 +37,22 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
     }
 
     private fun initListAdapter() {
-        recyclerView = binding.list
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            ).apply { setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_list_item)!!) }
-        )
-
         val listAdapter = RemindListAdapter {
-            Log.d("MJ_DEBUG", "YES! : ${it.name}")
             findNavController().navigate(HomeFragmentDirections.actionHomeToRegister().setRemind(it))
         }
 
-        recyclerView.adapter = listAdapter
+        recyclerView = binding.list
+        with(recyclerView){
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(
+                DividerItemDecoration(
+                    context,
+                    DividerItemDecoration.VERTICAL
+                ).apply { setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_list_item)!!) }
+            )
+            adapter = listAdapter
+        }
+
         lifecycle.coroutineScope.launch {
             viewModel.remindList().collect {
                 listAdapter.submitList(it)
