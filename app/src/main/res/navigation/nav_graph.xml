@@ -21,6 +21,11 @@
         android:name="com.delightroom.reminder.ui.register.RegisterFragment"
         android:label="register"
         tools:layout="@layout/register_fragment">
+        <argument
+            android:name="remind"
+            app:nullable="true"
+            android:defaultValue="@null"
+            app:argType="com.delightroom.reminder.data.Remind" />
     </fragment>
 
     <fragment

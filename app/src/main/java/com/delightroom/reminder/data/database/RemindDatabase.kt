@@ -22,6 +22,7 @@ abstract class RemindDatabase : RoomDatabase() {
                     context,
                     RemindDatabase::class.java,
                     "db_remind")
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
 

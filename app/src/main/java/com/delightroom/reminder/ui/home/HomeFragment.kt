@@ -39,6 +39,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
 
         val listAdapter = RemindListAdapter {
             Log.d("MJ_DEBUG", "YES! : ${it.name}")
+            findNavController().navigate(HomeFragmentDirections.actionHomeToRegister().setRemind(it))
         }
 
         recyclerView.adapter = listAdapter

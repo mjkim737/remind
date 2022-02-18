@@ -24,6 +24,13 @@ class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
             remindDao.insert(remind)
         }
     }
+
+    //리마인드 데이터 수정
+    fun modifyRemindData(remind: Remind) {
+        CoroutineScope(Dispatchers.IO).launch {
+            remindDao.update(remind)
+        }
+    }
 }
 
 class RegisterViewModelFactory(
