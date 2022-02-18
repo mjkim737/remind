@@ -12,6 +12,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initBinding() {
         binding.viewModel = viewModel
     }
-
-
 }

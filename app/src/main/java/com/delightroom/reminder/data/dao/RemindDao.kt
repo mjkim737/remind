@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.delightroom.reminder.data.Remind
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RemindDao {
@@ -12,5 +13,5 @@ interface RemindDao {
     fun insert(remind: Remind)
 
     @Query("SELECT * FROM remind ORDER BY time ASC")
-    fun getAll(): List<Remind>
+    fun getAll(): Flow<List<Remind>>
 }

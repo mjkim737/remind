@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"/>
 
             <EditText
+                android:id="@+id/edtxt_name"
                 android:hint="Please enter a name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
