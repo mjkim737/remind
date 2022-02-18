@@ -46,11 +46,12 @@ class RemindListAdapter(private val onItemClicked: (Remind) -> Unit) :
         holder.bindViewHolder(getItem(position))
     }
 
-    class RemindViewHolder(private val binding: ListItemRemindBinding) : RecyclerView.ViewHolder(binding.root) {
+    class RemindViewHolder(private val binding: ListItemRemindBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SimpleDateFormat")
         fun bindViewHolder(remind: Remind) {
             binding.txtName.text = remind.name
-            binding.txtTime.text = SimpleDateFormat("h:mm a").format(Date(remind.time.toLong() * 1000))
+            binding.txtTime.text = SimpleDateFormat("h:mm a").format(Date(remind.time))
             binding.checkbox.isChecked = remind.isDone
         }
     }

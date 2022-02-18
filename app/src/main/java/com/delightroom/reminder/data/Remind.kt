@@ -12,14 +12,14 @@ data class Remind(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 
     @ColumnInfo var name: String?,
-    @ColumnInfo var time: Int,
+    @ColumnInfo var time: Long,
     @ColumnInfo var ringtone: String?, //todo mj
     @ColumnInfo var isDone: Boolean,
     ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString(),
-        parcel.readInt(),
+        parcel.readLong(),
         parcel.readString(),
         parcel.readByte() != 0.toByte()
     ) {
@@ -28,7 +28,7 @@ data class Remind(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeString(name)
-        parcel.writeInt(time)
+        parcel.writeLong(time)
         parcel.writeString(ringtone)
         parcel.writeByte(if (isDone) 1 else 0)
     }

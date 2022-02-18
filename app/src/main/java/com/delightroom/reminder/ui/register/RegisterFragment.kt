@@ -1,5 +1,7 @@
 package com.delightroom.reminder.ui.register
 
+import android.util.Log
+import android.widget.TimePicker
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -9,6 +11,7 @@ import com.delightroom.reminder.data.Remind
 import com.delightroom.reminder.databinding.RegisterFragmentBinding
 import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
+import java.util.*
 
 class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
     override val layoutResourceId: Int = R.layout.register_fragment
@@ -17,7 +20,7 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
             (activity?.application as MyApplication).remindDatabase.remindDao()
         )
     }
-    private var remindId: Int? = null
+    private var modifyRemind: Remind? = null
 
     override fun initBinding() {
         binding.viewModel = viewModel
@@ -27,21 +30,21 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
             findNavController().popBackStack(R.id.home, false) //todo mj
 
             val remind: Remind
-            if (remindId == null) {
+            if (modifyRemind == null) {
                 remind = Remind(
                     name = binding.edtxtName.text.toString(),
-                    time = 938291839221.toInt(),
+                    time = getTime(),
                     ringtone = "ringtoooon",
-                    isDone = true
+                    isDone = false
                 )
                 viewModel.saveRemindData(remind)
             } else {
                 remind = Remind(
-                    id = remindId!!,
+                    id = modifyRemind!!.id,
                     name = binding.edtxtName.text.toString(),
-                    time = 938291839221.toInt(),
+                    time = getTime(),
                     ringtone = "modified",
-                    isDone = true
+                    isDone = modifyRemind!!.isDone
                 )
                 viewModel.modifyRemindData(remind)
             }
@@ -52,10 +55,29 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         val args: RegisterFragmentArgs by navArgs()
         val remind = args.remind
         remind?.let {
-            remindId = it.id
+            modifyRemind = it
+
+            val cal: Calendar = Calendar.getInstance()
+            cal.timeInMillis = it.time
+
             binding.edtxtName.setText(it.name)
+            binding.time.hour = cal.get(Calendar.HOUR_OF_DAY)
+            binding.time.minute = cal.get(Calendar.MINUTE)
+
             //todo 나머지 데이터도 set
         }
+    }
+
+    private fun getTime(): Long {
+        val tp: TimePicker = binding.time
+        val cal: Calendar = Calendar.getInstance()
+
+        cal.apply {
+            set(Calendar.HOUR_OF_DAY, tp.hour)
+            set(Calendar.MINUTE, tp.minute)
+        }
+
+        return cal.timeInMillis
     }
 }
 
