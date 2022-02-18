@@ -1,10 +1,12 @@
 package com.delightroom.reminder.ui.home
 
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.delightroom.reminder.R
@@ -13,6 +15,7 @@ import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>() {
     override val layoutResourceId: Int = R.layout.home_fragment
@@ -36,6 +39,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
     private fun initListAdapter() {
         recyclerView = binding.list
         recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            ).apply { setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_list_item)!!) }
+        )
 
         val listAdapter = RemindListAdapter {
             Log.d("MJ_DEBUG", "YES! : ${it.name}")
