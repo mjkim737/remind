@@ -4,18 +4,76 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/blue_black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.alarm.AlarmFragment">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gd_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gd_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.7" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gd_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gd_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
         <TextView
-            android:text="alarm"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/txt_name"
+            android:text="알람 약 먹기"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/gd_start"
+            app:layout_constraintEnd_toEndOf="@id/gd_end"
+            app:layout_constraintBottom_toTopOf="@+id/txt_time"
+            app:layout_constraintTop_toTopOf="@+id/gd_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/txt_time"
+            android:text="08:00"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:autoSizeTextType="uniform"
+            android:lines="1"
+            android:gravity="center"
+            app:layout_constraintDimensionRatio="2"
+            app:layout_constraintStart_toStartOf="@id/gd_start"
+            app:layout_constraintEnd_toEndOf="@id/gd_end"
+            app:layout_constraintTop_toBottomOf="@+id/txt_name"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <Button
+            android:id="@+id/btn_dismiss"
+            android:text="DISMISS"
+            app:layout_constraintStart_toStartOf="@id/gd_start"
+            app:layout_constraintEnd_toEndOf="@id/gd_end"
+            app:layout_constraintTop_toTopOf="@+id/gd_bottom"
+            app:layout_constraintDimensionRatio="3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
