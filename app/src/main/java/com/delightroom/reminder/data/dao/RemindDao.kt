@@ -12,6 +12,9 @@ interface RemindDao {
     @Update
     fun update(remind: Remind)
 
+    @Query("SELECT * FROM remind WHERE id = :remindId")
+    fun getRemindItem(remindId: Int): Flow<Remind>
+
     @Query("SELECT * FROM remind ORDER BY time ASC")
     fun getAll(): Flow<List<Remind>>
 }

@@ -68,6 +68,7 @@
         <Button
             android:id="@+id/btn_dismiss"
             android:text="DISMISS"
+            android:onClick="@{()->viewModel.dismissBtn()}"
             app:layout_constraintStart_toStartOf="@id/gd_start"
             app:layout_constraintEnd_toEndOf="@id/gd_end"
             app:layout_constraintTop_toTopOf="@+id/gd_bottom"
