@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RemindDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(remind: Remind)
+    fun insert(remind: Remind): Long
 
     @Update
     fun update(remind: Remind)

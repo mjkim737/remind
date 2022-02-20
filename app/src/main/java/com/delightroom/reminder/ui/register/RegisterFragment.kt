@@ -1,6 +1,5 @@
 package com.delightroom.reminder.ui.register
 
-import android.util.Log
 import android.widget.TimePicker
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -30,31 +29,7 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         initArgsData()
 
         viewModel.saveEvent.observe(viewLifecycleOwner, Observer {
-            val remind: Remind
-            val currentCal = getTimeCalendar()
-
-            if (modifyRemind == null) {
-                remind = Remind(
-                    name = binding.edtxtName.text.toString(),
-                    time = currentCal.timeInMillis,
-                    ringtone = "ringtoooon",
-                    isDone = false
-                )
-                viewModel.saveRemindData(remind)
-            } else {
-                remind = Remind(
-                    id = modifyRemind!!.id,
-                    name = binding.edtxtName.text.toString(),
-                    time = currentCal.timeInMillis,
-                    ringtone = "modified",
-                    isDone = modifyRemind!!.isDone
-                )
-                viewModel.modifyRemindData(remind)
-            }
-
-            registerWorker(currentCal, remind.id)
-
-            findNavController().popBackStack(R.id.home, false) //todo mj
+            if (modifyRemind == null) registerNewRemind() else modifyRemind()
         })
     }
 
@@ -85,7 +60,11 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
             set(Calendar.SECOND, 0)
         }
 
-        return cal  //todo util
+        if (cal.before(Calendar.getInstance())) {
+            cal.add(Calendar.HOUR_OF_DAY, 24)
+        }
+
+        return cal
     }
 
     private fun registerWorker(currentCal: Calendar, remindId: Int) {
@@ -102,6 +81,43 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
     private fun getTimeDiff(currentCal: Calendar): Long{
         val currentDate = Calendar.getInstance()
         return currentCal.timeInMillis - currentDate.timeInMillis
+    }
+
+    /**
+     * 새로운 리마인드 등록
+     */
+    private fun registerNewRemind() {
+        val currentCal = getTimeCalendar()
+        val remind =  Remind(
+            name = binding.edtxtName.text.toString(),
+            time = currentCal.timeInMillis,
+            ringtone = "ringtoooon",
+            isDone = false
+        )
+        viewModel.saveRemindData(remind)
+
+        viewModel.saveCompleted.observe(viewLifecycleOwner, Observer {
+            registerWorker(currentCal, it.toInt())
+            findNavController().popBackStack(R.id.home, false) //todo mj
+        })
+    }
+
+    /**
+     * 등록된 리마인드 수정
+     */
+    private fun modifyRemind() {
+        val currentCal = getTimeCalendar()
+        val remind = Remind(
+            id = modifyRemind!!.id,
+            name = binding.edtxtName.text.toString(),
+            time = currentCal.timeInMillis,
+            ringtone = "modified",
+            isDone = modifyRemind!!.isDone
+        )
+        viewModel.modifyRemindData(remind)
+
+        registerWorker(currentCal, remind.id)
+        findNavController().popBackStack(R.id.home, false) //todo mj
     }
 }
 

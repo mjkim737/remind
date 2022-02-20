@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
     val saveEvent = SingleLiveEvent<Any>()
+    val saveCompleted = SingleLiveEvent<Long>()
 
     //리마인드 저장 버튼 클릭
     fun saveRemindBtn(){
@@ -21,7 +22,7 @@ class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
     //리마인드 데이터 저장
     fun saveRemindData(remind: Remind){
         CoroutineScope(Dispatchers.IO).launch {
-            remindDao.insert(remind)
+            saveCompleted.postValue(remindDao.insert(remind))
         }
     }
 
@@ -29,6 +30,7 @@ class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
     fun modifyRemindData(remind: Remind) {
         CoroutineScope(Dispatchers.IO).launch {
             remindDao.update(remind)
+            saveCompleted.call()
         }
     }
 }
