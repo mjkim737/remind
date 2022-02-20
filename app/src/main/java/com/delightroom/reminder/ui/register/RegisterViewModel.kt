@@ -11,11 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
-    val homeFragment = SingleLiveEvent<Any>()
+    val saveEvent = SingleLiveEvent<Any>()
 
     //리마인드 저장 버튼 클릭
     fun saveRemindBtn(){
-        homeFragment.call()
+        saveEvent.call()
     }
 
     //리마인드 데이터 저장

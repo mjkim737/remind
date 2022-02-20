@@ -14,6 +14,10 @@
             android:id="@+id/action_home_to_register"
             app:destination="@+id/register"
             />
+        <action
+            android:id="@+id/action_home_to_alarm"
+            app:destination="@+id/alarm"
+            />
     </fragment>
 
     <fragment
@@ -32,6 +36,11 @@
         android:id="@+id/alarm"
         android:name="com.delightroom.reminder.ui.alarm.AlarmFragment"
         android:label="alarm"
-        tools:layout="@layout/alarm_fragment"/>
+        tools:layout="@layout/alarm_fragment">
+        <argument
+            android:name="remindId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
 </navigation>
