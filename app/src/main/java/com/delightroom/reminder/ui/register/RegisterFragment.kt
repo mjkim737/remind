@@ -112,7 +112,7 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
             name = binding.edtxtName.text.toString(),
             time = currentCal.timeInMillis,
             ringtone = "modified",
-            isDone = modifyRemind!!.isDone
+            isDone = false
         )
         viewModel.modifyRemindData(remind)
 

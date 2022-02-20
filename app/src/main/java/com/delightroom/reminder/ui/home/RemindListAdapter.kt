@@ -1,6 +1,5 @@
 package com.delightroom.reminder.ui.home
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -12,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 //todo mj https://developer.android.google.cn/codelabs/basic-android-kotlin-training-intro-room-flow?hl=ko#9
-class RemindListAdapter(private val onItemClicked: (Remind) -> Unit) :
+class RemindListAdapter(private val onItemClicked: (Remind) -> Unit, private val onCheckboxClicked: (Remind, Boolean) -> Unit) :
     ListAdapter<Remind, RemindListAdapter.RemindViewHolder>(DiffCallback) {
 
     companion object{
@@ -28,17 +27,23 @@ class RemindListAdapter(private val onItemClicked: (Remind) -> Unit) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemindViewHolder {
-        val viewHolder = RemindViewHolder(
-            ListItemRemindBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+        val binding = ListItemRemindBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
-        viewHolder.itemView.setOnClickListener{
+        val viewHolder = RemindViewHolder(binding)
+
+        viewHolder.itemView.setOnClickListener {
             val position = viewHolder.adapterPosition
             onItemClicked(getItem(position))
         }
+
+        binding.checkbox.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            onCheckboxClicked(getItem(position), binding.checkbox.isChecked)
+        }
+
         return viewHolder
     }
 

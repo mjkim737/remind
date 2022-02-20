@@ -34,14 +34,24 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
 
         defineAlarmPage()
         initListAdapter()
+        observeCheckbox()
     }
 
     private fun initListAdapter() {
-        val listAdapter = RemindListAdapter {
-            findNavController().navigate(
-                HomeFragmentDirections.actionHomeToRegister().setRemind(it)
-            )
-        }
+        val listAdapter = RemindListAdapter(
+            onItemClicked = {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToRegister().setRemind(it)
+                )
+            },
+            onCheckboxClicked = { remind, isChecked ->
+                remind.apply {
+                    isDone = !isChecked
+                }
+
+                viewModel.saveActivateState(remind)
+            }
+        )
 
         recyclerView = binding.list
         with(recyclerView) {
@@ -60,12 +70,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
                 }
             )
             adapter = listAdapter
-        }
-
-        lifecycle.coroutineScope.launch {
-            viewModel.remindList().collect {
-                listAdapter.submitList(it)
-            }
+            updateList()
         }
     }
 
@@ -86,6 +91,20 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
                             )
                     }
                 }
+            }
+        }
+    }
+
+    private fun observeCheckbox(){
+        viewModel.checkboxSaveCompleted.observe(viewLifecycleOwner, Observer {
+            updateList()
+        })
+    }
+
+    private fun updateList(){
+        lifecycle.coroutineScope.launch {
+            viewModel.remindList().collect {
+                (recyclerView.adapter as RemindListAdapter).submitList(it)
             }
         }
     }
