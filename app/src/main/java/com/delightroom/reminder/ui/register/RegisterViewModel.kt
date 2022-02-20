@@ -1,5 +1,7 @@
 package com.delightroom.reminder.ui.register
 
+import android.content.Context
+import android.media.RingtoneManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.delightroom.reminder.data.Remind
@@ -35,6 +37,27 @@ class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
                 saveCompleted.call()
             }
         }
+    }
+
+    /**
+     * 디바이스 내 Ringtone 정보 가져오기
+     * @return HashMap<Ringtone Title, Ringtone Uri>
+     */
+    fun getRingtoneMap(context: Context): HashMap<String, String> {
+        val ringtoneManager = RingtoneManager(context)
+        ringtoneManager.setType(RingtoneManager.TYPE_RINGTONE)
+        val cursor = ringtoneManager.cursor
+        val ringtoneMap = hashMapOf<String, String>()
+
+        while (cursor.moveToNext()) {
+            val title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX)
+            val uri = ringtoneManager.getRingtoneUri(cursor.position)
+
+            ringtoneMap[title] = uri.toString()
+        }
+        cursor.close()
+
+        return ringtoneMap
     }
 }
 

@@ -13,7 +13,7 @@ import com.delightroom.reminder.databinding.HomeFragmentBinding
 import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
 import com.delightroom.reminder.global.util.RemindConsts
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>() {
@@ -34,7 +34,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
 
         defineAlarmPage()
         initListAdapter()
-        observeCheckbox()
     }
 
     private fun initListAdapter() {
@@ -70,7 +69,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
                 }
             )
             adapter = listAdapter
-            updateList()
+            observeListUpdate()
         }
     }
 
@@ -79,31 +78,29 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
      * 알람이 활성화 상태면 알람페이지로 이동한다.
      */
     private fun defineAlarmPage(){
-        //알람을 받으면 intent 를 통해 remindId를 가져와서 알람페이지로 이동한다.
         val remindId = activity?.intent?.getIntExtra(RemindConsts.KEY_REMIND_ID, -1)
         remindId?.let {
             if (remindId != -1) {
                 lifecycle.coroutineScope.launch {
-                    viewModel.remindItem(remindId).collect {
-                        if (!it.isDone)
+                    viewModel.remindItem(remindId).observe(viewLifecycleOwner) {
+                        if (!it.isDone){
+                            activity?.intent?.putExtra(RemindConsts.KEY_REMIND_ID, -1)
                             findNavController().navigate(
                                 HomeFragmentDirections.actionHomeToAlarm().setRemind(it)
                             )
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun observeCheckbox(){
-        viewModel.checkboxSaveCompleted.observe(viewLifecycleOwner, Observer {
-            updateList()
-        })
-    }
-
-    private fun updateList(){
+    /**
+     * DB 변경 발생 시 리스트 업데이트
+     */
+    private fun observeListUpdate(){
         lifecycle.coroutineScope.launch {
-            viewModel.remindList().collect {
+            viewModel.remindList().collectLatest {
                 (recyclerView.adapter as RemindListAdapter).submitList(it)
             }
         }

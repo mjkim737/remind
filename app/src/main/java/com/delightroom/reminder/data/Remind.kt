@@ -2,7 +2,6 @@ package com.delightroom.reminder.data
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -13,7 +12,8 @@ data class Remind(
 
     @ColumnInfo var name: String?,
     @ColumnInfo var time: Long,
-    @ColumnInfo var ringtone: String?, //todo mj
+    @ColumnInfo var ringtoneTitle: String?,
+    @ColumnInfo var ringtoneUri: String?,
     @ColumnInfo var isDone: Boolean,
     ): Parcelable {
     constructor(parcel: Parcel) : this(
@@ -21,14 +21,15 @@ data class Remind(
         parcel.readString(),
         parcel.readLong(),
         parcel.readString(),
+        parcel.readString(),
         parcel.readByte() != 0.toByte()
     )
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeString(name)
         parcel.writeLong(time)
-        parcel.writeString(ringtone)
+        parcel.writeString(ringtoneTitle)
+        parcel.writeString(ringtoneUri)
         parcel.writeByte(if (isDone) 1 else 0)
     }
 
@@ -45,4 +46,5 @@ data class Remind(
             return arrayOfNulls(size)
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package com.delightroom.reminder.ui.home
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.delightroom.reminder.data.Remind
@@ -10,13 +11,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
     val nextFragment = SingleLiveEvent<Any>()
     fun remindList() : Flow<List<Remind>> = remindDao.getAll()
-    fun remindItem(remindId: Int) : Flow<Remind> = remindDao.getRemindItem(remindId)
-    val checkboxSaveCompleted = SingleLiveEvent<Any>()
+    fun remindItem(remindId: Int) : LiveData<Remind> = remindDao.getRemindItem(remindId)
 
     //리마인드 추가 버튼 클릭
     fun registerRemind(){
@@ -27,9 +26,6 @@ class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
     fun saveActivateState(remind: Remind) {
         CoroutineScope(Dispatchers.IO).launch {
             remindDao.update(remind)
-            withContext(Dispatchers.Main) {
-                checkboxSaveCompleted.call()
-            }
         }
     }
 }

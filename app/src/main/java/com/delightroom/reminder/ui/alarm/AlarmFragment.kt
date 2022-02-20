@@ -3,6 +3,7 @@ package com.delightroom.reminder.ui.alarm
 import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.net.Uri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -33,13 +34,10 @@ class AlarmFragment : BaseFragment<AlarmFragmentBinding>() {
                 modifyRemind!!.isDone = true
                 viewModel.modifyRemindData(it)
             }
-
-            ringtoneSound.stop()
             findNavController().popBackStack(R.id.home, false)
         })
 
         initArgsData()
-        playRingtone()
     }
 
     private fun initArgsData(){
@@ -48,16 +46,22 @@ class AlarmFragment : BaseFragment<AlarmFragmentBinding>() {
             modifyRemind = it
             binding.txtName.text = it.name
             binding.txtTime.text = SimpleDateFormat("HH:mm", Locale.KOREA).format(Date(it.time))
+            it.ringtoneUri?.let { uri -> playRingtone(uri) }
         }
     }
 
-    private fun playRingtone() {
-        val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-        ringtoneSound = RingtoneManager.getRingtone(requireContext(), ringtoneUri)
+    private fun playRingtone(ringtoneUri: String) {
+        ringtoneSound = RingtoneManager.getRingtone(requireContext(), Uri.parse(ringtoneUri))
 
         ringtoneSound.audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ALARM)
             .build()
+
         ringtoneSound.play()
+    }
+
+    override fun onDestroyView() {
+        ringtoneSound.stop()
+        super.onDestroyView()
     }
 }

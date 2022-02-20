@@ -1,5 +1,9 @@
 package com.delightroom.reminder.ui.register
 
+import android.text.TextUtils
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.TimePicker
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -14,6 +18,7 @@ import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
     override val layoutResourceId: Int = R.layout.register_fragment
@@ -23,11 +28,17 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         )
     }
     private var modifyRemind: Remind? = null
+    private lateinit var selectedRingtoneTitle: String
+    private lateinit var selectedRingtoneUri: String
+    private val ringtoneTitleList = arrayListOf<String>()
 
     override fun initBinding() {
         binding.viewModel = viewModel
+
+        initRingtoneList()
         initArgsData()
 
+        //저장버튼 클릭 이벤트
         viewModel.saveEvent.observe(viewLifecycleOwner, Observer {
             if (modifyRemind == null) registerNewRemind() else modifyRemind()
         })
@@ -45,8 +56,7 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
             binding.edtxtName.setText(it.name)
             binding.time.hour = cal.get(Calendar.HOUR_OF_DAY)
             binding.time.minute = cal.get(Calendar.MINUTE)
-
-            //todo 나머지 데이터도 set
+            it.ringtoneTitle?.let { ringtoneTitle -> setRingtoneSelection(ringtoneTitle) }
         }
     }
 
@@ -91,7 +101,8 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         val remind =  Remind(
             name = binding.edtxtName.text.toString(),
             time = currentCal.timeInMillis,
-            ringtone = "ringtoooon",
+            ringtoneTitle = selectedRingtoneTitle,
+            ringtoneUri = selectedRingtoneUri,
             isDone = false
         )
         viewModel.saveRemindData(remind)
@@ -111,13 +122,48 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
             id = modifyRemind!!.id,
             name = binding.edtxtName.text.toString(),
             time = currentCal.timeInMillis,
-            ringtone = "modified",
+            ringtoneTitle = selectedRingtoneTitle,
+            ringtoneUri = selectedRingtoneUri,
             isDone = false
         )
         viewModel.modifyRemindData(remind)
 
         registerWorker(currentCal, remind.id)
         findNavController().popBackStack(R.id.home, false) //todo mj
+    }
+
+    private fun initRingtoneList(){
+        val ringtoneMap = viewModel.getRingtoneMap(requireContext())
+        ringtoneTitleList.addAll(ringtoneMap.keys)
+
+        binding.spinnerRingtone.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, ringtoneTitleList)
+
+        binding.spinnerRingtone.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedRingtoneTitle = ringtoneTitleList[position]
+                selectedRingtoneUri = ringtoneMap[ringtoneTitleList[position]]!!
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
+    /**
+     * Ringtone 초기 선택 설정
+     */
+    private fun setRingtoneSelection(title: String) {
+        ringtoneTitleList.forEachIndexed { index, keyTitle->
+            if (TextUtils.equals(title, keyTitle)) {
+                binding.spinnerRingtone.setSelection(index)
+                return
+            }
+        }
     }
 }
 

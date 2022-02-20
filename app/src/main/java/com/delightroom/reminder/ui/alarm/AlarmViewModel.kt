@@ -8,12 +8,10 @@ import com.delightroom.reminder.global.base.BaseViewModel
 import com.delightroom.reminder.global.util.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class AlarmViewModel(private val remindDao: RemindDao) : BaseViewModel() {
     val dismissEvent = SingleLiveEvent<Any>()
-    fun remindItem(remindId: Int) : Flow<Remind> = remindDao.getRemindItem(remindId)
 
     fun dismissBtn() {
         dismissEvent.call()

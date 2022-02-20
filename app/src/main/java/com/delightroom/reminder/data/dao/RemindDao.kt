@@ -1,5 +1,6 @@
 package com.delightroom.reminder.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.delightroom.reminder.data.Remind
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,7 @@ interface RemindDao {
     fun update(remind: Remind)
 
     @Query("SELECT * FROM remind WHERE id = :remindId")
-    fun getRemindItem(remindId: Int): Flow<Remind>
+    fun getRemindItem(remindId: Int): LiveData<Remind>
 
     @Query("SELECT * FROM remind ORDER BY time ASC")
     fun getAll(): Flow<List<Remind>>
