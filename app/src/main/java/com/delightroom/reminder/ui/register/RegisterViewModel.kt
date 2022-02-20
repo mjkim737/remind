@@ -9,6 +9,7 @@ import com.delightroom.reminder.global.util.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
     val saveEvent = SingleLiveEvent<Any>()
@@ -30,7 +31,9 @@ class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
     fun modifyRemindData(remind: Remind) {
         CoroutineScope(Dispatchers.IO).launch {
             remindDao.update(remind)
-            saveCompleted.call()
+            withContext(Dispatchers.Main){
+                saveCompleted.call()
+            }
         }
     }
 }

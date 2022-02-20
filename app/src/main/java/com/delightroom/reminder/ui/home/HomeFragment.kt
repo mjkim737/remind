@@ -1,6 +1,5 @@
 package com.delightroom.reminder.ui.home
 
-import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -26,18 +25,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         )
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        //알람을 받으면 intent 를 통해 remindId를 가져와서 알람페이지로 이동한다.
-        val remindId = activity?.intent?.getIntExtra(RemindConsts.KEY_REMIND_ID, -1)
-        remindId?.let {
-            if(remindId != -1) findNavController().navigate(
-                HomeFragmentDirections.actionHomeToAlarm().setRemindId(it)
-            )
-        }
-    }
-
     override fun initBinding() {
         binding.viewModel = viewModel
 
@@ -45,22 +32,32 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
             findNavController().navigate(R.id.action_home_to_register)
         })
 
+        defineAlarmPage()
         initListAdapter()
     }
 
     private fun initListAdapter() {
         val listAdapter = RemindListAdapter {
-            findNavController().navigate(HomeFragmentDirections.actionHomeToRegister().setRemind(it))
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeToRegister().setRemind(it)
+            )
         }
 
         recyclerView = binding.list
-        with(recyclerView){
+        with(recyclerView) {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(
                 DividerItemDecoration(
                     context,
                     DividerItemDecoration.VERTICAL
-                ).apply { setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_list_item)!!) }
+                ).apply {
+                    setDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.divider_list_item
+                        )!!
+                    )
+                }
             )
             adapter = listAdapter
         }
@@ -68,6 +65,27 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         lifecycle.coroutineScope.launch {
             viewModel.remindList().collect {
                 listAdapter.submitList(it)
+            }
+        }
+    }
+
+    /**
+     * 알람을 받으면 intent 를 통해 가져온 remindId를 이용해 DB 조회 후
+     * 알람이 활성화 상태면 알람페이지로 이동한다.
+     */
+    private fun defineAlarmPage(){
+        //알람을 받으면 intent 를 통해 remindId를 가져와서 알람페이지로 이동한다.
+        val remindId = activity?.intent?.getIntExtra(RemindConsts.KEY_REMIND_ID, -1)
+        remindId?.let {
+            if (remindId != -1) {
+                lifecycle.coroutineScope.launch {
+                    viewModel.remindItem(remindId).collect {
+                        if (!it.isDone)
+                            findNavController().navigate(
+                                HomeFragmentDirections.actionHomeToAlarm().setRemind(it)
+                            )
+                    }
+                }
             }
         }
     }

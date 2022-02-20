@@ -38,9 +38,10 @@
         android:label="alarm"
         tools:layout="@layout/alarm_fragment">
         <argument
-            android:name="remindId"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:name="remind"
+            app:nullable="true"
+            android:defaultValue="@null"
+            app:argType="com.delightroom.reminder.data.Remind" />
     </fragment>
 
 </navigation>

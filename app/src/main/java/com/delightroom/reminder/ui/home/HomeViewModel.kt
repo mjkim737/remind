@@ -6,11 +6,15 @@ import com.delightroom.reminder.data.Remind
 import com.delightroom.reminder.data.dao.RemindDao
 import com.delightroom.reminder.global.base.BaseViewModel
 import com.delightroom.reminder.global.util.SingleLiveEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
     val nextFragment = SingleLiveEvent<Any>()
     fun remindList() : Flow<List<Remind>> = remindDao.getAll()
+    fun remindItem(remindId: Int) : Flow<Remind> = remindDao.getRemindItem(remindId)
 
     //리마인드 추가 버튼 클릭
     fun registerRemind(){

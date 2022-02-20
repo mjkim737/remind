@@ -40,13 +40,10 @@ class AlarmFragment : BaseFragment<AlarmFragmentBinding>() {
 
     private fun initArgsData(){
         val args: AlarmFragmentArgs by navArgs()
-
-        lifecycle.coroutineScope.launch {
-            viewModel.remindItem(args.remindId).collect{
-                modifyRemind = it
-                binding.txtName.text = it.name
-                binding.txtTime.text = SimpleDateFormat("HH:mm", Locale.KOREA).format(Date(it.time))
-            }
+        args.remind?.let {
+            modifyRemind = it
+            binding.txtName.text = it.name
+            binding.txtTime.text = SimpleDateFormat("HH:mm", Locale.KOREA).format(Date(it.time))
         }
     }
 }
