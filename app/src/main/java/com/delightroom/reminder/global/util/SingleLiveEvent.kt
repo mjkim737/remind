@@ -21,11 +21,11 @@ class SingleLiveEvent<T>: MutableLiveData<T>() {
     // Configuration Changed가 일어나도 pending값은 false이기 때문에 observe가 데이터를 전달하지 않는다!
     @MainThread
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
-        super.observe(owner, Observer {
+        super.observe(owner) {
             if (pending.compareAndSet(true, false)) {
                 observer.onChanged(it)
             }
-        })
+        }
     }
 
     //데이터의 속성을 지정해주지 않아도 call만으로 setValue를 호출 가능

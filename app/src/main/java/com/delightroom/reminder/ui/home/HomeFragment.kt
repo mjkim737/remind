@@ -7,7 +7,6 @@ import android.os.PowerManager
 import android.provider.Settings
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -51,9 +50,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
     override fun initBinding() {
         binding.viewModel = viewModel
 
-        viewModel.nextFragment.observe(viewLifecycleOwner, Observer {
+        viewModel.nextFragment.observe(viewLifecycleOwner) {
             findNavController().navigate(R.id.action_home_to_register)
-        })
+        }
 
         defineAlarmPage()
         initListAdapter()

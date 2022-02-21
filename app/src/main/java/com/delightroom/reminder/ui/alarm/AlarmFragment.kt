@@ -5,7 +5,6 @@ import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.delightroom.reminder.R
@@ -29,13 +28,13 @@ class AlarmFragment : BaseFragment<AlarmFragmentBinding>() {
     override fun initBinding() {
         binding.viewModel = viewModel
 
-        viewModel.dismissEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.dismissEvent.observe(viewLifecycleOwner) {
             modifyRemind?.let {
                 modifyRemind!!.isDone = true
                 viewModel.modifyRemindData(it)
             }
             findNavController().popBackStack(R.id.home, false)
-        })
+        }
 
         initArgsData()
     }

@@ -6,16 +6,18 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TimePicker
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.work.*
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.delightroom.reminder.R
 import com.delightroom.reminder.data.Remind
 import com.delightroom.reminder.databinding.RegisterFragmentBinding
-import com.delightroom.reminder.global.util.RemindConsts
 import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
+import com.delightroom.reminder.global.util.RemindConsts
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -38,9 +40,9 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         initArgsData()
 
         //저장버튼 클릭 이벤트
-        viewModel.saveEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.saveEvent.observe(viewLifecycleOwner) {
             if (modifyRemind == null) registerNewRemind() else modifyRemind()
-        })
+        }
     }
 
     private fun initArgsData() {
@@ -106,10 +108,10 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         )
         viewModel.saveRemindData(remind)
 
-        viewModel.saveCompleted.observe(viewLifecycleOwner, Observer {
+        viewModel.saveCompleted.observe(viewLifecycleOwner) {
             registerWorker(currentCal, it.toInt())
             findNavController().popBackStack(R.id.home, false) //todo mj
-        })
+        }
     }
 
     /**
