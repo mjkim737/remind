@@ -15,9 +15,9 @@ class RemindWorker(context: Context, workerParams: WorkerParameters) :
     override fun doWork(): Result {
         val remindId : Int = inputData.getInt(RemindConsts.KEY_REMIND_ID, -1)
         Log.e("MJ_DEBUG", "Worker Working...! $remindId")
-        //todo id값을 넘겨서 알람화면으로 넘기면 조회
 
         showAlarm(remindId)
+
         return Result.success()
     }
 

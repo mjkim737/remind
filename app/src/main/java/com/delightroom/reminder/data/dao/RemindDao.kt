@@ -16,6 +16,6 @@ interface RemindDao {
     @Query("SELECT * FROM remind WHERE id = :remindId")
     fun getRemindItem(remindId: Int): LiveData<Remind>
 
-    @Query("SELECT * FROM remind ORDER BY time ASC")
+    @Query("SELECT * FROM remind")
     fun getAll(): Flow<List<Remind>>
 }

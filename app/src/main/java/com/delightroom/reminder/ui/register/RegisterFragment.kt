@@ -18,7 +18,6 @@ import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.HashMap
 
 class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
     override val layoutResourceId: Int = R.layout.register_fragment
@@ -136,7 +135,7 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         val ringtoneMap = viewModel.getRingtoneMap(requireContext())
         ringtoneTitleList.addAll(ringtoneMap.keys)
 
-        binding.spinnerRingtone.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, ringtoneTitleList)
+        binding.spinnerRingtone.adapter = ArrayAdapter(requireContext(), R.layout.list_item_spinner, ringtoneTitleList)
 
         binding.spinnerRingtone.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(

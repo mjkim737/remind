@@ -9,6 +9,8 @@
         <CheckBox
             android:id="@+id/checkbox"
             android:button="@null"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
             android:background="@drawable/selector_checkbox_remind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

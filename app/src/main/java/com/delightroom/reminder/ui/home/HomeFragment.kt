@@ -1,5 +1,10 @@
 package com.delightroom.reminder.ui.home
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.os.PowerManager
+import android.provider.Settings
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -23,6 +28,24 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         HomeViewModelFactory(
             (activity?.application as MyApplication).remindDatabase.remindDao()
         )
+    }
+
+    //배터리 최적화 요청 다이얼로그
+    private val batteryOptimizeDlg : AlertDialog by lazy{
+        val intent = Intent()
+        intent.action =
+            Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+
+        val batteryOptimizeDlgBuilder = AlertDialog.Builder(requireContext(), android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth)
+        batteryOptimizeDlgBuilder.setTitle("REMIND")
+        batteryOptimizeDlgBuilder.setMessage("알림이 제대로 울리지 않았나요?\n배터리 최적화 목록에 추가하면 좋을 것 같아요.")
+        batteryOptimizeDlgBuilder.setPositiveButton("확인") { _, _ ->
+            startActivity(intent)
+        }
+        batteryOptimizeDlgBuilder.setNegativeButton("취소") { dialog, _ ->
+            dialog.dismiss()
+        }
+        batteryOptimizeDlgBuilder.create()
     }
 
     override fun initBinding() {
@@ -77,22 +100,38 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
      * 알람을 받으면 intent 를 통해 가져온 remindId를 이용해 DB 조회 후
      * 알람이 활성화 상태면 알람페이지로 이동한다.
      */
-    private fun defineAlarmPage(){
+    private fun defineAlarmPage() {
         val remindId = activity?.intent?.getIntExtra(RemindConsts.KEY_REMIND_ID, -1)
         remindId?.let {
             if (remindId != -1) {
                 lifecycle.coroutineScope.launch {
                     viewModel.remindItem(remindId).observe(viewLifecycleOwner) {
-                        if (!it.isDone){
+                        if (!it.isDone) {
                             activity?.intent?.putExtra(RemindConsts.KEY_REMIND_ID, -1)
-                            findNavController().navigate(
-                                HomeFragmentDirections.actionHomeToAlarm().setRemind(it)
-                            )
+
+                            if (viewModel.isAlarmedAtTime(it.time)) {
+                                findNavController().navigate(
+                                    HomeFragmentDirections.actionHomeToAlarm().setRemind(it)
+                                )
+                            } else {
+                                showBatteryOptimizeAlert()
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * 배터리 최적화 목록에 등록 안되어 있을 때 사용자가 등록하길 요청
+     */
+    private fun showBatteryOptimizeAlert(){
+        val powerManager = activity?.getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (!powerManager.isIgnoringBatteryOptimizations(requireContext().packageName)
+            && !batteryOptimizeDlg.isShowing
+        )
+            batteryOptimizeDlg.show()
     }
 
     /**
@@ -104,5 +143,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
                 (recyclerView.adapter as RemindListAdapter).submitList(it)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        if (batteryOptimizeDlg.isShowing) batteryOptimizeDlg.dismiss()
+        super.onDestroyView()
     }
 }

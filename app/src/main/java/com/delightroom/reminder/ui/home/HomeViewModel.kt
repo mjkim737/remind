@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.util.*
 
 class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
     val nextFragment = SingleLiveEvent<Any>()
@@ -27,6 +28,16 @@ class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             remindDao.update(remind)
         }
+    }
+
+    /**
+     * 예정알람 시간보다 1분 이상 지연 되었을 경우 return false
+     */
+    fun isAlarmedAtTime(supposedTime: Long): Boolean{
+        val current : Calendar = Calendar.getInstance()
+        val diff: Long = current.timeInMillis - supposedTime
+
+        return diff < 60000
     }
 }
 
