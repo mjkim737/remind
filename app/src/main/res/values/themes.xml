@@ -20,7 +20,4 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Reminder.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.Reminder.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
