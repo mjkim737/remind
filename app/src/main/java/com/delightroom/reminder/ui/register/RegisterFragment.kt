@@ -8,18 +8,13 @@ import android.widget.TimePicker
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.delightroom.reminder.R
 import com.delightroom.reminder.data.Remind
 import com.delightroom.reminder.databinding.RegisterFragmentBinding
 import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
-import com.delightroom.reminder.global.util.RemindConsts
 import java.util.*
-import java.util.concurrent.TimeUnit
+
 
 class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
     override val layoutResourceId: Int = R.layout.register_fragment
@@ -78,22 +73,6 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         return cal
     }
 
-    private fun registerWorker(currentCal: Calendar, remindId: Int) {
-        val remindData: Data = workDataOf(RemindConsts.KEY_REMIND_ID to remindId)
-
-        val workRequest = OneTimeWorkRequestBuilder<RemindWorker>()
-            .setInitialDelay(getTimeDiff(currentCal), TimeUnit.MILLISECONDS)
-            .setInputData(remindData)
-            .build()
-
-        WorkManager.getInstance(requireContext()).enqueue(workRequest)   //todo mj
-    }
-
-    private fun getTimeDiff(currentCal: Calendar): Long{
-        val currentDate = Calendar.getInstance()
-        return currentCal.timeInMillis - currentDate.timeInMillis
-    }
-
     /**
      * 새로운 리마인드 등록
      */
@@ -109,7 +88,7 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
         viewModel.saveRemindData(remind)
 
         viewModel.saveCompleted.observe(viewLifecycleOwner) {
-            registerWorker(currentCal, it.toInt())
+            viewModel.registerAlarm(requireContext(), currentCal.timeInMillis, it.toInt())
             findNavController().popBackStack(R.id.home, false) //todo mj
         }
     }
@@ -127,9 +106,9 @@ class RegisterFragment : BaseFragment<RegisterFragmentBinding>() {
             ringtoneUri = selectedRingtoneUri,
             isDone = false
         )
-        viewModel.modifyRemindData(remind)
 
-        registerWorker(currentCal, remind.id)
+        viewModel.modifyRemindData(remind)
+        viewModel.registerAlarm(requireContext(), currentCal.timeInMillis, remind.id)
         findNavController().popBackStack(R.id.home, false) //todo mj
     }
 

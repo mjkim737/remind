@@ -66,11 +66,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
                 )
             },
             onCheckboxClicked = { remind, isChecked ->
-                remind.apply {
+                viewModel.saveActivateState(remind.apply {
                     isDone = !isChecked
-                }
-
-                viewModel.saveActivateState(remind)
+                })
+               viewModel.onChangeAlarm(requireContext(), remind, isDone = !isChecked)
             }
         )
 
