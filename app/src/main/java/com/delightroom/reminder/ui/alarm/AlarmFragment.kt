@@ -26,6 +26,8 @@ class AlarmFragment : BaseFragment<AlarmFragmentBinding>() {
     private lateinit var ringtoneSound: Ringtone
 
     override fun initBinding() {
+        activity?.let { viewModel.hideSystemUI(it) }
+
         binding.viewModel = viewModel
 
         viewModel.dismissEvent.observe(viewLifecycleOwner) {
@@ -60,6 +62,7 @@ class AlarmFragment : BaseFragment<AlarmFragmentBinding>() {
     }
 
     override fun onDestroyView() {
+        activity?.let { viewModel.showSystemUI(it) }
         ringtoneSound.stop()
         super.onDestroyView()
     }
