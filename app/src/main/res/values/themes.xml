@@ -20,4 +20,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="myTimePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:background">@color/deep_blue</item>
+        <item name="android:headerBackground">@color/deep_blue</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:colorAccent">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
 </resources>

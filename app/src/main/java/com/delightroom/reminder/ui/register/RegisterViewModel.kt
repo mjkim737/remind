@@ -73,7 +73,7 @@ class RegisterViewModel(private val remindDao: RemindDao) : BaseViewModel() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.putExtra(RemindConsts.KEY_REMIND_ID, remindId)
         val pIntent = PendingIntent.getBroadcast(context, remindId, intent, 0)
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pIntent)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pIntent)
     }
 }
 

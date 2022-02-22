@@ -66,6 +66,7 @@
             <TimePicker
                 android:id="@+id/time"
                 android:layout_weight="6"
+                android:theme="@style/myTimePicker"
                 android:background="@drawable/background_list_item"
                 android:numbersBackgroundColor="@color/white"
                 android:timePickerMode="spinner"

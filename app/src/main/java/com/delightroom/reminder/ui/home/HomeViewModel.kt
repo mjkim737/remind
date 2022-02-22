@@ -61,7 +61,7 @@ class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
                 it.cancel(pIntent)
                 pIntent.cancel()
             }else{
-                it.setExact(AlarmManager.RTC_WAKEUP, remind.time, pIntent)
+                it.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, remind.time, pIntent)
             }
         }
     }
