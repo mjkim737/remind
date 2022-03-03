@@ -32,6 +32,7 @@ class AlarmViewModel(private val remindRepository: RemindRepository, application
     //리마인드 데이터 수정
     private fun modifyRemindData() {
         CoroutineScope(Dispatchers.IO).launch {
+            remindData.run { isDone = true }
             remindRepository.update(remindData)
         }
     }
