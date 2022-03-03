@@ -8,22 +8,26 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
+import com.delightroom.reminder.R
 import com.delightroom.reminder.data.Remind
 import com.delightroom.reminder.data.dao.RemindDao
 import com.delightroom.reminder.global.base.BaseViewModel
 import com.delightroom.reminder.global.util.AlarmReceiver
 import com.delightroom.reminder.global.util.RemindConsts
 import com.delightroom.reminder.global.util.SingleLiveEvent
+import com.delightroom.reminder.repository.RemindRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel(private val remindDao: RemindDao, application: Application): BaseViewModel(application) {
+class HomeViewModel(private val remindRepository: RemindRepository, application: Application): BaseViewModel(application) {
     val nextFragment = SingleLiveEvent<Any>()
-    fun remindList() : Flow<List<Remind>> = remindDao.getAll()
-    fun remindItem(remindId: Int) : LiveData<Remind> = remindDao.getRemindItem(remindId)
+    fun remindList() : Flow<List<Remind>> = remindRepository.getAll()
+    fun remindItem(remindId: Int) : LiveData<Remind> = remindRepository.getRemindItem(remindId)
     private var alarmManager: AlarmManager? = null
 
     //리마인드 추가 버튼 클릭
@@ -34,7 +38,7 @@ class HomeViewModel(private val remindDao: RemindDao, application: Application):
     //체크박스 선택여부에 따른 리마인드 활성화 여부 DB 업데이트
     fun saveActivateState(remind: Remind) {
         CoroutineScope(Dispatchers.IO).launch {
-            remindDao.update(remind)
+            remindRepository.update(remind)
         }
     }
 
@@ -69,13 +73,13 @@ class HomeViewModel(private val remindDao: RemindDao, application: Application):
 }
 
 class HomeViewModelFactory(
-    private val remindDao: RemindDao,
+    private val remindRepository: RemindRepository,
     private val application: Application
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(remindDao, application) as T
+            return HomeViewModel(remindRepository, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

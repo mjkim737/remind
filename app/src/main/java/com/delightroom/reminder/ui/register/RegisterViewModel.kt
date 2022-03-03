@@ -30,9 +30,9 @@ class RegisterViewModel(private val remindRepository: RemindRepository, applicat
     val remindName = SingleLiveEvent<String>()
     val ringtonePosition = SingleLiveEvent<Int>()
     val ringtoneAdapter = SingleLiveEvent<ArrayAdapter<String>>()
-    private var modifyRemindData: Remind? = null
     private val ringtoneTitleList = arrayListOf<String>()
     private val deviceRingtoneMap : HashMap<String, String> by lazy { getRingtoneMap() }
+    private var modifyRemindData: Remind? = null
 
     init {
         initRingtoneList()
@@ -158,7 +158,7 @@ class RegisterViewModel(private val remindRepository: RemindRepository, applicat
     /**
      * Ringtone 초기 선택 설정
      */
-    fun setRingtoneSelection(title: String) {
+    private fun setRingtoneSelection(title: String) {
         ringtoneTitleList.forEachIndexed { index, keyTitle->
             if (TextUtils.equals(title, keyTitle)) {
                 ringtonePosition.value = index

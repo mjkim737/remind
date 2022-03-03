@@ -17,6 +17,7 @@ import com.delightroom.reminder.databinding.HomeFragmentBinding
 import com.delightroom.reminder.global.base.BaseFragment
 import com.delightroom.reminder.global.util.MyApplication
 import com.delightroom.reminder.global.util.RemindConsts
+import com.delightroom.reminder.repository.RemindRepository
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
     private lateinit var recyclerView: RecyclerView
     private val viewModel: HomeViewModel by viewModels {  //todo mj
         HomeViewModelFactory(
-            (activity?.application as MyApplication).remindDatabase.remindDao(),
+            RemindRepository((activity?.application as MyApplication).remindDatabase.remindDao()),
             requireActivity().application
         )
     }
