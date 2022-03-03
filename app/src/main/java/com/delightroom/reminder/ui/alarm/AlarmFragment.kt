@@ -19,7 +19,8 @@ class AlarmFragment : BaseFragment<AlarmFragmentBinding>() {
     override val layoutResourceId: Int = R.layout.alarm_fragment
     private val viewModel : AlarmViewModel by viewModels {
         AlarmViewModelFactory(
-            (activity?.application as MyApplication).remindDatabase.remindDao()
+            (activity?.application as MyApplication).remindDatabase.remindDao(),
+            requireActivity().application
         )
     }
     private var modifyRemind: Remind? = null

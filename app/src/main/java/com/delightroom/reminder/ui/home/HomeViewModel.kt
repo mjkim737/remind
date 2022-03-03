@@ -1,6 +1,7 @@
 package com.delightroom.reminder.ui.home
 
 import android.app.AlarmManager
+import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
+class HomeViewModel(private val remindDao: RemindDao, application: Application): BaseViewModel(application) {
     val nextFragment = SingleLiveEvent<Any>()
     fun remindList() : Flow<List<Remind>> = remindDao.getAll()
     fun remindItem(remindId: Int) : LiveData<Remind> = remindDao.getRemindItem(remindId)
@@ -68,12 +69,13 @@ class HomeViewModel(private val remindDao: RemindDao): BaseViewModel() {
 }
 
 class HomeViewModelFactory(
-    private val remindDao: RemindDao
+    private val remindDao: RemindDao,
+    private val application: Application
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(remindDao) as T
+            return HomeViewModel(remindDao, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

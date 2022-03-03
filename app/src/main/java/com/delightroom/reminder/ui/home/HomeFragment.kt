@@ -25,7 +25,8 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
     private lateinit var recyclerView: RecyclerView
     private val viewModel: HomeViewModel by viewModels {  //todo mj
         HomeViewModelFactory(
-            (activity?.application as MyApplication).remindDatabase.remindDao()
+            (activity?.application as MyApplication).remindDatabase.remindDao(),
+            requireActivity().application
         )
     }
 
